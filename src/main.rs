@@ -8,7 +8,7 @@ mod season;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let year = 1950;
+    let year = 2022;
     season::display_races_in_season(year).await?;
 
     Ok(())

@@ -3,26 +3,25 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 use crate::racetable::RaceTable;
-
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct RaceResult {
-    #[serde(rename = "Drivers")]
-    pub drivers: HashMap<String, Vec<Driver>>,
+    #[serde(rename = "Driver")]
+    pub driver: Driver,
 }
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
-struct Driver {
-    code: String,
-    given_name: String,
-    family_name: String,
+pub struct Driver {
+    pub code: String,
+    pub given_name: String,
+    pub family_name: String,
 }
 
 #[derive(Deserialize, Debug)]
-struct Response {
+pub struct Response {
     #[serde(rename = "RaceTable")]
-    race_table: RaceTable,
+    pub race_table: RaceTable,
 }
 
 pub async fn get_race_results(season: u32, race: u32) -> Result<Response, Error> {
@@ -30,14 +29,13 @@ pub async fn get_race_results(season: u32, race: u32) -> Result<Response, Error>
     let resp = reqwest::get(&requested_url)
         .await?
         .json::<HashMap<String, Response>>()
-        .await?
-        .get("MRData")
-        .expect("");
-    // let total_races = &resp.total;
-    let race_table = &resp.race_table;
-    // let race = &race_table.races;
+        .await?;
+
+    let json_resp = resp.get("MRData").expect("");
+
+    let race_table = &json_resp.race_table;
 
     Ok(Response {
-        race_table: race_table,
+        race_table: race_table.clone(),
     })
 }

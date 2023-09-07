@@ -18,6 +18,7 @@ pub struct Race {
     pub date: String,
     #[serde(rename = "Circuit")]
     pub circuit: circuit::Circuit,
+    #[serde(rename = "Results")]
     #[serde(default)]
-    pub result: Option<race_result::RaceResult>,
+    pub race_results: Vec<Option<race_result::RaceResult>>,
 }
